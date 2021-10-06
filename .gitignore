@@ -1,6 +1,9 @@
 # IDE files
+/.classpath
+/.project
 /.idea
 java-new-features.iml
+/out
 
 # Compiled class file
 *.class
