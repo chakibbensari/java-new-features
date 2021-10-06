@@ -147,7 +147,7 @@ public class Main {
 		// Callable interface is the same as Runnable interface, it has the call methode which is executed in parallel Thread
 		// The difference is that it returns a value, this value should be wrapped in a Future<T> because it's unpredictble to know 
 		// when the value is available in the main thread
-		// in the main thread, the value is fetch by using the Future get method ==> it is a blocking method !
+		// in the main thread, the value is fetch by using the Future get method ==> it is a blocking method ! 
 	}
 	
 	
