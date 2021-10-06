@@ -2,8 +2,11 @@ package dz.chicov.features.functions;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.Callable;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
@@ -148,8 +151,71 @@ public class Main {
 		// The difference is that it returns a value, this value should be wrapped in a Future<T> because it's unpredictble to know 
 		// when the value is available in the main thread
 		// in the main thread, the value is fetch by using the Future get method ==> it is a blocking method ! 
+		
+		// CompletableFuture :
+		// is a Future with mor sophisticated methos :
+		//it is used for asynchronous processing and chaining asynchronous operations
+		// supplyAsync takes the first async operation to do (Supplier)
+		
+		CompletableFuture<String> completableFuture = CompletableFuture.supplyAsync(() -> "Hello");
+
+		CompletableFuture<String> future = completableFuture
+		  .thenApply(s -> s + " World");
+		
+		// possible to chain with thenApply, all asynchonous operation are executed by the same Thread
+		CompletableFuture<String> completableFuture2 = CompletableFuture.supplyAsync(() -> "hello")
+						 .thenApply( s -> s + " world");
+			
+		// possible to chain with thenApplyAsync with the use of a different thread from Thread used in preceded operation. Pay attention and be logic
+		CompletableFuture<Void> completableFuture3 = CompletableFuture.supplyAsync(() -> Main.hello())
+						 .thenApply( s -> s + "World")
+						 .thenApply(s -> s + " !")
+						 .thenAccept((String t) -> System.out.println(t));  //in 170, Void
+		
+//		it is possible to use exceptionnally which can return un object on which new opertaions can be excuted asynchronously
+						 
 	}
 	
+	public static String hello() {
+		return "Hello ";
+	}
 	
+	// option 2
+	public static String world(String s) {
+		return s + "World !";
+	}
 	
+	public Future<String> getFirst(ExecutorService service){
+		Callable<String> first = () -> {
+			return "Hello first";
+		};
+		return service.submit(first);
+		
+	}
+	
+	public Future<String> getSecond(ExecutorService service, String first){
+		Callable<String> second = () -> {
+			return first + " second";
+		};
+		return service.submit(second);
+		
+	}
+	
+	public Future<String> getThird(ExecutorService service, String second){
+		Callable<String> third = () -> {
+			return second + " third";
+		};
+		return service.submit(third);
+		
+	}
+	
+	public static void second(String first) {
+		Callable<String> second = () -> {
+			return first + " second";
+		};
+	}
+	
+	public static String thirs(String second) {
+		return second + " third";
+	}
 }
